@@ -10,24 +10,60 @@ export const useTeam = () => {
 
 export const TeamProvider = ({ children }) => {
   const [team, setTeam] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const savedTeam = localStorage.getItem('pokemonTeam');
-    if (savedTeam) setTeam(JSON.parse(savedTeam));
+    console.log('🔄 Loading team from localStorage...');
+    try {
+      const savedTeam = localStorage.getItem('pokemonTeam');
+      console.log('📦 Found in storage:', savedTeam);
+      
+      if (savedTeam) {
+        const parsedTeam = JSON.parse(savedTeam);
+        console.log('✅ Parsed team:', parsedTeam);
+        setTeam(parsedTeam);
+      } else {
+        console.log('❌ No team found in storage');
+      }
+    } catch (error) {
+      console.error('💥 Error loading team:', error);
+    }
+    setIsLoaded(true);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('pokemonTeam', JSON.stringify(team));
-  }, [team]);
+    if (isLoaded) {
+      console.log('💾 Saving team to localStorage:', team);
+      try {
+        localStorage.setItem('pokemonTeam', JSON.stringify(team));
+        console.log('✅ Team saved successfully!');
+      } catch (error) {
+        console.error('💥 Error saving team:', error);
+      }
+    }
+  }, [team, isLoaded]); 
 
   const addPokemon = (pokemon) => {
+    console.log('➕ Adding Pokémon:', pokemon.name);
     if (team.length < 6 && !team.find(p => p.id === pokemon.id)) {
-      setTeam([...team, pokemon]);
+      const newTeam = [...team, pokemon];
+      console.log('🆕 New team will be:', newTeam);
+      setTeam(newTeam);
+    } else {
+      console.log('🚫 Cannot add - team full or duplicate');
     }
   };
 
-  const removePokemon = (id) => setTeam(team.filter(p => p.id !== id));
-  const clearTeam = () => setTeam([]);
+  const removePokemon = (id) => {
+    console.log('➖ Removing Pokémon ID:', id);
+    setTeam(team.filter(p => p.id !== id));
+  };
+  
+  const clearTeam = () => {
+    console.log('🧹 Clearing entire team');
+    setTeam([]);
+  };
+  
   const isPokemonInTeam = (id) => team.some(p => p.id === id);
   const isTeamFull = () => team.length >= 6;
 
