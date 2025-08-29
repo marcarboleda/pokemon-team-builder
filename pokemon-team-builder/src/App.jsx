@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from 'react'
 import { TeamProvider } from './contexts/TeamContext'
 import TeamView from './components/TeamView'
