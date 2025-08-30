@@ -16,29 +16,23 @@ export const TeamProvider = ({ children }) => {
     console.log('🔄 Loading team from localStorage...');
     try {
       const savedTeam = localStorage.getItem('pokemonTeam');
-      console.log('📦 Found in storage:', savedTeam);
       
       if (savedTeam) {
         const parsedTeam = JSON.parse(savedTeam);
-        console.log('✅ Parsed team:', parsedTeam);
         setTeam(parsedTeam);
-      } else {
-        console.log('❌ No team found in storage');
-      }
+      } 
     } catch (error) {
-      console.error('💥 Error loading team:', error);
+      console.error('Error loading team:', error);
     }
     setIsLoaded(true);
   }, []);
 
   useEffect(() => {
     if (isLoaded) {
-      console.log('💾 Saving team to localStorage:', team);
       try {
         localStorage.setItem('pokemonTeam', JSON.stringify(team));
-        console.log('✅ Team saved successfully!');
       } catch (error) {
-        console.error('💥 Error saving team:', error);
+        console.error('Error saving team:', error);
       }
     }
   }, [team, isLoaded]); 
@@ -47,10 +41,10 @@ export const TeamProvider = ({ children }) => {
     console.log('➕ Adding Pokémon:', pokemon.name);
     if (team.length < 6 && !team.find(p => p.id === pokemon.id)) {
       const newTeam = [...team, pokemon];
-      console.log('🆕 New team will be:', newTeam);
+      console.log('New team will be:', newTeam);
       setTeam(newTeam);
     } else {
-      console.log('🚫 Cannot add - team full or duplicate');
+      console.log('Cannot add - team full or duplicate');
     }
   };
 
